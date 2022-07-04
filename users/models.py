@@ -21,7 +21,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = "email"
+    EMAIL_FIELD = "email"
 
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     objects = CustomUserManager()
+
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "users"
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def get_shortname(self):
+        return f"{self.username}"
