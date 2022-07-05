@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "djoser",
+    "rest_framework",
+    "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "users.apps.UsersConfig",
+    "profiles.apps.ProfilesConfig",
 ]
 
 
@@ -54,6 +57,15 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "customusermodel.urls"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+}
+
 
 AUTH_USER_MODEL = "users.User"
 
@@ -129,3 +141,45 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+from django.utils.log import DEFAULT_LOGGING
+
+
+import logging
+import logging.config
+
+logger = logging.getLogger(__name__)
+
+logging.config.dictConfig(
+    {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "console": {
+                "format": "%(asctime)s - %(name)-12s - %(levelname)-8s %(message)s"
+            },
+            "file": {
+                "format": "%(asctime)s - %(name)-12s - %(levelname)-8s %(message)s"
+            },
+            "django.server": DEFAULT_LOGGING["formatters"]["django.server"],
+        },
+        "handlers": {
+            "console": {
+                "formatter": "console",
+                "class": "logging.StreamHandler",
+            },
+            "file": {
+                "class": "logging.FileHandler",
+                "formatter": "file",
+                "filename": "logs/cus.log",
+            },
+            "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
+        },
+        "loggers": {
+            "": {"level": "INFO", "handlers": ["console", "file"], "propagate": False},
+            "apps": {"level": "INFO", "handlers": ["console"], "propagate": False},
+            "" "django.server": DEFAULT_LOGGING["loggers"]["django.server"],
+        },
+    }
+)
